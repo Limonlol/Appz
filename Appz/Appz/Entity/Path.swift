@@ -13,6 +13,7 @@ public struct Path {
     
     public var pathComponents = [String]()
     public var queryParameters = [String:String]()
+    public var needDoubleSlash: Bool = true
     
     public var queryItems: [URLQueryItem] {
         return queryParameters
@@ -21,10 +22,11 @@ public struct Path {
     
     public init() {}
     
-    public init(pathComponents: [String], queryParameters: [String:String]) {
+    public init(pathComponents: [String], queryParameters: [String:String], needDoubleSlash: Bool = true) {
         
         self.pathComponents = pathComponents
         self.queryParameters = queryParameters
+        self.needDoubleSlash = needDoubleSlash
     }
     
     /**
@@ -53,6 +55,10 @@ public struct Path {
             urlComponents?.path = "/" + pathComponents.joined(separator: "/")
         }
         
+        if !needDoubleSlash {
+            let stringReplace = urlComponents?.path.replacingOccurrences(of: "//", with: "") ?? ""
+            urlComponents?.path = stringReplace
+        }
         return urlComponents?.url
     }
 }
